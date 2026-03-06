@@ -13,3 +13,5 @@ Default configuration with all hooks, commands, and shared conventions.
 - commands/review.md
 - commands/test.md
 - commands/sync-config.md
+- commands/housekeeping.md
+- commands/setup.md

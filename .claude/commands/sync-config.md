@@ -1,0 +1,1 @@
+/Users/anthonypelusocook/claude-code-config/commands/sync-config.md
