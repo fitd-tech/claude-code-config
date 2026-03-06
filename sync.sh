@@ -152,3 +152,44 @@ fi
 if [ $ISSUES -eq 0 ]; then
   echo "Everything is in sync."
 fi
+
+# --- Refresh README ---
+write_claude_readme() {
+  local profile="unknown"
+  if [ -f "$CLAUDE_DIR/README.md" ]; then
+    profile="$(grep -m1 '^Profile:' "$CLAUDE_DIR/README.md" | sed 's/^Profile: *//' || echo "unknown")"
+    [ -z "$profile" ] && profile="unknown"
+  fi
+  cat > "$CLAUDE_DIR/README.md" <<EOF
+# .claude — Managed Configuration
+
+This directory is managed by the shared Claude Code config repo.
+Config repo: $CONFIG_REPO
+Profile: $profile
+Last updated: $(date +%Y-%m-%d)
+
+Symlinked files in this directory are linked to the config repo and kept in sync
+automatically. Do not edit them directly — changes will be overwritten on the next sync.
+
+## Managing this configuration
+
+| Command | What it does |
+|---------|--------------|
+| \`/sync-config\` | Detect and repair symlink drift, refresh this README |
+| \`/init-config\` | Re-run setup to add or change linked components |
+
+## Local overrides
+
+- \`.claude/settings.local.json\` — Personal settings (gitignored, never committed)
+- \`./CLAUDE.md\` (project root) — Project-specific instructions for Claude
+
+## Ejecting
+
+To remove all managed symlinks and take ownership of the config files:
+
+    bash $CONFIG_REPO/unlink.sh
+EOF
+}
+
+write_claude_readme
+echo "Updated .claude/README.md"

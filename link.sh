@@ -275,6 +275,39 @@ for entry in "${IGNORE_ENTRIES[@]}"; do
   fi
 done
 
+# --- README generator ---
+write_claude_readme() {
+  cat > "$CLAUDE_DIR/README.md" <<EOF
+# .claude — Managed Configuration
+
+This directory is managed by the shared Claude Code config repo.
+Config repo: $CONFIG_REPO
+Profile: $PROFILE
+Last updated: $(date +%Y-%m-%d)
+
+Symlinked files in this directory are linked to the config repo and kept in sync
+automatically. Do not edit them directly — changes will be overwritten on the next sync.
+
+## Managing this configuration
+
+| Command | What it does |
+|---------|--------------|
+| \`/sync-config\` | Detect and repair symlink drift, refresh this README |
+| \`/init-config\` | Re-run setup to add or change linked components |
+
+## Local overrides
+
+- \`.claude/settings.local.json\` — Personal settings (gitignored, never committed)
+- \`./CLAUDE.md\` (project root) — Project-specific instructions for Claude
+
+## Ejecting
+
+To remove all managed symlinks and take ownership of the config files:
+
+    bash $CONFIG_REPO/unlink.sh
+EOF
+}
+
 # --- Summary ---
 print_header "Summary"
 
@@ -295,5 +328,7 @@ fi
 
 echo ""
 echo "Updated .gitignore with: ${IGNORE_ENTRIES[*]}"
+write_claude_readme
+echo "Updated .claude/README.md"
 echo ""
 echo "Done. Config repo: $CONFIG_REPO"
